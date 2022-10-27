@@ -86,8 +86,10 @@ void publishMessage(void) {
 
 // Callback function
 void subscribeCallback(char* topic, byte* payload, unsigned int length) {
-  String s = String((char *)payload);
-  String sClean = s.substring(0, s.length() - 1);
+  String s = "";
+  for (int i = 0; i < length; i++) {  
+    s.concat((char)payload[i]);
+  }
 
   M5.Lcd.clear();
   M5.Lcd.setCursor(0,0);
@@ -96,8 +98,8 @@ void subscribeCallback(char* topic, byte* payload, unsigned int length) {
   M5.Lcd.println("");
   Serial.printf("%s\n", DateTime.toISOString().c_str());
   M5.lcd.setTextSize(5);
-  M5.Lcd.println(sClean);
-  Serial.println(sClean);
+  M5.Lcd.println(s);
+  Serial.println(s);
 }
 
 void setup(){
@@ -121,6 +123,10 @@ void loop() {
   } else {
     client.loop();
     if (M5.BtnA.wasPressed()) {
+      M5.lcd.setTextSize(2);
+      M5.Lcd.println("");
+      M5.Lcd.println("Processing...");
+      Serial.println("Processing...");
       publishMessage();
       Serial.println("Button A, pressed.");
     }
